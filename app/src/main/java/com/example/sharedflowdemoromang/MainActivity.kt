@@ -20,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.sharedflowdemoromang.ui.theme.SharedFlowDemoRomanGTheme
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -53,9 +55,11 @@ fun MainScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(key1 = Unit) {
-        sharedFlow.collect {
-            println("Collecting $it")
-            messages.add(it)
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            sharedFlow.collect {
+                println("Collecting $it")
+                messages.add(it)
+            }
         }
     }
 
